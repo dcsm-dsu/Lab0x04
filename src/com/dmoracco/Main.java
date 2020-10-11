@@ -21,6 +21,10 @@ public class Main {
         for (int r = 0; r <= 10; r++){
             System.out.printf("\t%d, ", FibLoop(r));
         }
+        System.out.printf("\n\t%s\n", "Testing FibMatrix1");
+        for (int r = 0; r <= 10; r++){
+            System.out.printf("\t%d, ", FibMatrix1(r));
+        }
     }
 
 
@@ -31,20 +35,20 @@ public class Main {
 
     public static int FibCache(int number){
         // Initialize table
-        int[] resultsTable = new int[number+1];
+        int[] resultsCache = new int[number+1];
         for (int i = 0; i < number; i++){
-            resultsTable[i] = 0;
+            resultsCache[i] = 0;
         }
 
-        return fibHelper(number, resultsTable);
+        return fibCacheHelper(number, resultsCache);
     }
 
-    public static int fibHelper(int number, int[] resultsTable){
+    public static int fibCacheHelper(int number, int[] resultsCache){
         if (number < 2) return number; // skip 0, 1
-        else if (resultsTable[number] > 0) return resultsTable[number]; // if result is already in table, return value
+        else if (resultsCache[number] > 0) return resultsCache[number]; // if result is already in table, return value
         else { // otherwise, find and fill in result, then return.
-            resultsTable[number] = fibHelper(number-1, resultsTable)+fibHelper(number-2, resultsTable);
-            return resultsTable[number];
+            resultsCache[number] = fibCacheHelper(number-1, resultsCache)+ fibCacheHelper(number-2, resultsCache);
+            return resultsCache[number];
         }
     }
 
@@ -64,4 +68,35 @@ public class Main {
 
         return next;
     }
+
+    public static int FibMatrix1(int number){
+
+        if (number == 0) return 0;
+
+        // Create base matrix
+        int[][] matrix = {{1, 1}, {1, 0}};
+
+        // Iterate through x-2 powers of base matrix
+        for (int i = 0; i < number-2; i++){
+            fibMatrixMultiply(matrix);
+        }
+
+        // return top left element of matrix
+        return matrix[0][0];
+    }
+
+    public static void fibMatrixMultiply(int[][] matrix){
+        // multiply provided 2x2 matrix by the Fibonacci base matrix
+        // note: I got rid of the unnecessary arithmetic, though this would likely have been optimized anyway.
+        int tl = matrix[0][0] + matrix[0][1];
+        int tr = matrix[0][0];
+        int bl = matrix[0][0] + matrix[0][1];
+        int br = matrix[0][0];
+
+        matrix[0][0] = tl;
+        matrix[0][1] = tr;
+        matrix[1][0] = bl;
+        matrix[1][1] = br;
+    }
+
 }
