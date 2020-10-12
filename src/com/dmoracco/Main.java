@@ -15,7 +15,7 @@ public class Main {
        // Testing
        boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
        int maxX = 200;
-       long maxTime = 1000000000;
+       long maxTime = 60000;
        int testCount = 4;
 
        long startTime = 0, endTime = 0, lastRecurTime = 0, lastCacheTime = 0, lastLoopTime = 0, lastMatrixTime = 0;
@@ -39,54 +39,72 @@ public class Main {
            }
 
            int index = 0;
+           int z = 0;
+           long total = 0;
 
            //FibRecur
            if (lastRecurTime < maxTime){
+               for (z = 0; z < 1000; z++){
                    startTime = getCpuTime();
                    FibRecur(inputNumber);
                    endTime = getCpuTime();
-                   lastRecurTime = (endTime - startTime);
-                   currentRoundTimes[index++] =  lastRecurTime;
+                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+               }
+               lastRecurTime = total/1000; // average
+               currentRoundTimes[index++] =  lastRecurTime;
            } else{
                fibrecur = false;
                index++;
            }
 
            //FibCache
+           total = 0;
            if (lastCacheTime < maxTime){
-               startTime = getCpuTime();
-               FibCache(inputNumber);
-               endTime = getCpuTime();
-               lastCacheTime = (endTime - startTime);
+               for (z = 0; z < 1000; z++){
+                   startTime = getCpuTime();
+                   FibCache(inputNumber);
+                   endTime = getCpuTime();
+                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+               }
+               lastCacheTime = total/1000; // average
                currentRoundTimes[index++] =  lastCacheTime;
-           } else {
+           } else{
                fibcache = false;
                index++;
            }
 
            //FibLoop
+           total = 0;
            if (lastLoopTime < maxTime){
-               startTime = getCpuTime();
-               FibLoop(inputNumber);
-               endTime = getCpuTime();
-               lastLoopTime = (endTime - startTime);
+               for (z = 0; z < 1000; z++){
+                   startTime = getCpuTime();
+                   FibLoop(inputNumber);
+                   endTime = getCpuTime();
+                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+               }
+               lastLoopTime = total/1000; // average
                currentRoundTimes[index++] =  lastLoopTime;
-           } else {
-               fibcache = false;
+           } else{
+               fibloop = false;
                index++;
            }
 
            //FibMatrix
+           total =0;
            if (lastMatrixTime < maxTime){
-               startTime = getCpuTime();
-               FibMatrix1(inputNumber);
-               endTime = getCpuTime();
-               lastMatrixTime = (endTime - startTime);
+               for (z = 0; z < 1000; z++){
+                   startTime = getCpuTime();
+                   FibMatrix1(inputNumber);
+                   endTime = getCpuTime();
+                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+               }
+               lastMatrixTime = total/1000; // average
                currentRoundTimes[index++] =  lastMatrixTime;
-           } else {
-               fibcache = false;
+           } else{
+               fibmatrix = false;
                index++;
            }
+
            testTimes.add(currentRoundTimes);
 
            // Output
@@ -101,7 +119,7 @@ public class Main {
                    System.out.printf("%10s%20s%20s", "na", "na", "na");
                } else{
                    //Time
-                   System.out.printf("%10d", (int)currentRoundTimes[t]/1000);
+                   System.out.printf("%10d", (int)currentRoundTimes[t]);
                    //Ratio
                    if (inputNumber % 2 == 0){
                        System.out.printf("%20d", (currentRoundTimes[t] / testTimes.get((inputNumber/2) - 1)[t])); // Tx(X) / Tx(X/2)
