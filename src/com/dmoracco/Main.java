@@ -1,29 +1,148 @@
 package com.dmoracco;
 
+import com.dmoracco.GetCpuTime;
+
+import java.util.ArrayList;
+
+import static com.dmoracco.GetCpuTime.getCpuTime;
+
 public class Main {
 
     public static void main(String[] args) {
+
        validate();
+
+       // Testing
+       boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
+       int maxX = 200;
+       long maxTime = 1000000000;
+       int testCount = 4;
+
+       long startTime = 0, endTime = 0, lastRecurTime = 0, lastCacheTime = 0, lastLoopTime = 0, lastMatrixTime = 0;
+
+        ArrayList<long[]> testTimes = new ArrayList();
+
+       System.out.printf("\n\n%5s%5s%18s%50s%50s%50s\n",
+               "X", "N", "FibRecur", "FibCache", "FibLoop ", "FibMatrx");
+       System.out.printf("%12s", "");
+       for (int k = 0; k < testCount; k++){
+           System.out.printf("%10s%20s%20s", "t(X)", "Ratio", "Ex.Ratio");
+       }
+       System.out.printf("\n");
+       //System.out.printf("%10s%28s%28s%28s%28s\n", "", "T(x) - Ratio - Ex. Ratio", "T(x) - Ratio - Ex. Ratio", "T(x) - Ratio - Ex. Ratio","T(x) - Ratio - Ex. Ratio");
+
+       int inputNumber = 1;
+       while ((fibrecur || fibcache || fibloop || fibmatrix) && inputNumber <= maxX){
+           long[] currentRoundTimes = new long[testCount];
+           for (int i = 0; i < testCount; i++){
+              currentRoundTimes[i] = -1;
+           }
+
+           int index = 0;
+
+           //FibRecur
+           if (lastRecurTime < maxTime){
+                   startTime = getCpuTime();
+                   FibRecur(inputNumber);
+                   endTime = getCpuTime();
+                   lastRecurTime = (endTime - startTime);
+                   currentRoundTimes[index++] =  lastRecurTime;
+           } else{
+               fibrecur = false;
+               index++;
+           }
+
+           //FibCache
+           if (lastCacheTime < maxTime){
+               startTime = getCpuTime();
+               FibCache(inputNumber);
+               endTime = getCpuTime();
+               lastCacheTime = (endTime - startTime);
+               currentRoundTimes[index++] =  lastCacheTime;
+           } else {
+               fibcache = false;
+               index++;
+           }
+
+           //FibLoop
+           if (lastLoopTime < maxTime){
+               startTime = getCpuTime();
+               FibLoop(inputNumber);
+               endTime = getCpuTime();
+               lastLoopTime = (endTime - startTime);
+               currentRoundTimes[index++] =  lastLoopTime;
+           } else {
+               fibcache = false;
+               index++;
+           }
+
+           //FibMatrix
+           if (lastMatrixTime < maxTime){
+               startTime = getCpuTime();
+               FibMatrix1(inputNumber);
+               endTime = getCpuTime();
+               lastMatrixTime = (endTime - startTime);
+               currentRoundTimes[index++] =  lastMatrixTime;
+           } else {
+               fibcache = false;
+               index++;
+           }
+           testTimes.add(currentRoundTimes);
+
+           // Output
+           // X
+           System.out.printf("%5s", inputNumber);
+           // N
+           System.out.printf("%5s", (int)Math.ceil((Math.log(inputNumber+1)/Math.log(2))));
+               // https://www.geeksforgeeks.org/how-to-calculate-log-base-2-of-an-integer-in-java/
+           // Tests
+           for (int t = 0; t < testCount; t++){
+               if (currentRoundTimes[t] == -1){
+                   System.out.printf("%10s%20s%20s", "na", "na", "na");
+               } else{
+                   //Time
+                   System.out.printf("%10d", (int)currentRoundTimes[t]/1000);
+                   //Ratio
+                   if (inputNumber % 2 == 0){
+                       System.out.printf("%20d", (currentRoundTimes[t] / testTimes.get((inputNumber/2) - 1)[t])); // Tx(X) / Tx(X/2)
+                   } else System.out.printf("%20s", "");
+                   //Expected Ratio - wish I had a more clever way to handle this
+                   if (t == 0){
+                       // Exponential 1.6180^x
+                       System.out.printf("%20.2f", Math.pow(1.6180, inputNumber));
+                   } else if (t == 1 || t == 2){
+                       // Linear x
+                       System.out.printf("%20d", inputNumber);
+                   } else if (t == 3) {
+                       // Log_2(x)
+                       System.out.printf("%20.2f", ((Math.log(inputNumber) / Math.log(2))));
+                   }
+               }
+           }
+           System.out.printf("\n");
+           inputNumber++;
+       }
     }
 
     public static void validate(){
         System.out.println("Validating Algorithms:");
 
+        int tests = 10;
         System.out.printf("\n\t%s\n", "Testing FibRecur");
-        for (int t = 0; t <= 10; t++){
-            System.out.printf("\t%d, ", FibRecur(t));
+        for (int t = 0; t <= tests; t++){
+            System.out.printf("\t%d: %d", t, FibRecur(t));
         }
         System.out.printf("\n\t%s\n", "Testing FibCache");
-        for (int s = 0; s <= 10; s++){
-            System.out.printf("\t%d, ", FibCache(s));
+        for (int s = 0; s <= tests; s++){
+            System.out.printf("\t%d: %d, ", s, FibCache(s));
         }
         System.out.printf("\n\t%s\n", "Testing FibLoop");
-        for (int r = 0; r <= 10; r++){
-            System.out.printf("\t%d, ", FibLoop(r));
+        for (int r = 0; r <= tests; r++){
+            System.out.printf("\t%d: %d, ", r,  FibLoop(r));
         }
         System.out.printf("\n\t%s\n", "Testing FibMatrix1");
-        for (int r = 0; r <= 10; r++){
-            System.out.printf("\t%d, ", FibMatrix1(r));
+        for (int r = 0; r <= tests; r++){
+            System.out.printf("\t%d: %d, ", r, FibMatrix1(r));
         }
     }
 
