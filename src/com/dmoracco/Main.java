@@ -15,7 +15,7 @@ public class Main {
        // Testing
        boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
        int maxX = 200;
-       long maxTime = 60000;
+       long maxTime = 6000;
        int testCount = 4;
 
        long startTime = 0, endTime = 0, lastRecurTime = 0, lastCacheTime = 0, lastLoopTime = 0, lastMatrixTime = 0;
@@ -41,65 +41,106 @@ public class Main {
            int index = 0;
            int z = 0;
            long total = 0;
+           boolean overflow;
+
 
            //FibRecur
-           if (lastRecurTime < maxTime){
+           overflow = false;
+           if (fibrecur && lastRecurTime < maxTime){
                for (z = 0; z < 1000; z++){
                    startTime = getCpuTime();
-                   FibRecur(inputNumber);
+                   if (FibRecur(inputNumber) < 0){
+                       fibrecur = false;
+                       overflow = true;
+                       break;
+                   }
                    endTime = getCpuTime();
                    total = total + ((endTime-startTime)/1000); // converted to ms then added
                }
-               lastRecurTime = total/1000; // average
-               currentRoundTimes[index++] =  lastRecurTime;
+               if (!overflow){
+                   lastRecurTime = total/1000; // average
+                   currentRoundTimes[index++] =  lastRecurTime;
+               } else {
+                   currentRoundTimes[index++] = -2;
+               }
+
            } else{
                fibrecur = false;
                index++;
            }
 
            //FibCache
+           overflow = false;
            total = 0;
-           if (lastCacheTime < maxTime){
+           if (fibcache && lastCacheTime < maxTime){
                for (z = 0; z < 1000; z++){
                    startTime = getCpuTime();
-                   FibCache(inputNumber);
+                   if(FibCache(inputNumber) < 0){
+                       fibcache = false;
+                       overflow = true;
+                       break;
+                   }
                    endTime = getCpuTime();
                    total = total + ((endTime-startTime)/1000); // converted to ms then added
                }
-               lastCacheTime = total/1000; // average
-               currentRoundTimes[index++] =  lastCacheTime;
+               if (!overflow){
+                   lastCacheTime = total/1000; // average
+                   currentRoundTimes[index++] =  lastCacheTime;
+               } else {
+                   currentRoundTimes[index++] = -2;
+               }
+
            } else{
                fibcache = false;
                index++;
            }
 
            //FibLoop
+           overflow = false;
            total = 0;
-           if (lastLoopTime < maxTime){
+           if (fibloop && lastLoopTime < maxTime){
                for (z = 0; z < 1000; z++){
                    startTime = getCpuTime();
-                   FibLoop(inputNumber);
+                   if(FibLoop(inputNumber) < 0){
+                       fibloop = false;
+                       overflow = true;
+                       break;
+                   }
                    endTime = getCpuTime();
                    total = total + ((endTime-startTime)/1000); // converted to ms then added
                }
-               lastLoopTime = total/1000; // average
-               currentRoundTimes[index++] =  lastLoopTime;
+               if (!overflow){
+                   lastLoopTime = total/1000; // average
+                   currentRoundTimes[index++] =  lastLoopTime;
+               } else{
+                   currentRoundTimes[index++] = -2;
+               }
+
            } else{
                fibloop = false;
                index++;
            }
 
            //FibMatrix
+           overflow = false;
            total =0;
-           if (lastMatrixTime < maxTime){
+           if (fibmatrix && lastMatrixTime < maxTime){
                for (z = 0; z < 1000; z++){
                    startTime = getCpuTime();
-                   FibMatrix1(inputNumber);
+                   if(FibMatrix1(inputNumber)< 0 ){
+                      overflow = true;
+                      fibmatrix = false;
+                      break;
+                   }
                    endTime = getCpuTime();
                    total = total + ((endTime-startTime)/1000); // converted to ms then added
                }
-               lastMatrixTime = total/1000; // average
-               currentRoundTimes[index++] =  lastMatrixTime;
+               if (!overflow){
+                   lastMatrixTime = total/1000; // average
+                   currentRoundTimes[index++] =  lastMatrixTime;
+               } else{
+                   currentRoundTimes[index++] = -2;
+               }
            } else{
                fibmatrix = false;
                index++;
@@ -117,6 +158,8 @@ public class Main {
            for (int t = 0; t < testCount; t++){
                if (currentRoundTimes[t] == -1){
                    System.out.printf("%10s%20s%20s", "na", "na", "na");
+               } else if ( currentRoundTimes[t] == -2){
+                   System.out.printf("%10s%20s%20s", "ovr", "ovr", "ovr");
                } else{
                    //Time
                    System.out.printf("%10d", (int)currentRoundTimes[t]);
