@@ -235,15 +235,15 @@ public class Main {
         }
     }
 
-    public static int FibLoop(int number){
-        int A = 0;
-        int B = 1;
-        int next = 0;
+    public static long FibLoop(long number){
+        long A = 0;
+        long B = 1;
+        long next = 0;
 
         // skip 0, 1
         if (number < 2) return number;
         // Loop through storing the values for last two in sequence.
-        for (int i = 2; i <= number; i++){
+        for (long i = 2; i <= number; i++){
             next = A + B;
             A = B;
             B = next;
