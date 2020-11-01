@@ -4,7 +4,6 @@ import com.dmoracco.GetCpuTime;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import static com.dmoracco.GetCpuTime.getCpuTime;
 
@@ -75,7 +74,7 @@ public class Main {
            overflow = false;
            total = 0;
            if (fibcache && lastCacheTime < maxTime){
-               for (z = 0; z < 1000; z++){
+               for (z = 0; z < 10000; z++){
                    startTime = getCpuTime();
                    if(FibCache(inputNumber) < 0){
                        fibcache = false;
@@ -83,10 +82,10 @@ public class Main {
                        break;
                    }
                    endTime = getCpuTime();
-                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+                   total = total + ((endTime-startTime));
                }
                if (!overflow){
-                   lastCacheTime = total/1000; // average
+                   lastCacheTime = total/10000; // average
                    currentRoundTimes[index++] =  lastCacheTime;
                } else {
                    currentRoundTimes[index++] = -2;
@@ -101,7 +100,7 @@ public class Main {
            overflow = false;
            total = 0;
            if (fibloop && lastLoopTime < maxTime){
-               for (z = 0; z < 1000; z++){
+               for (z = 0; z < 10000; z++){
                    startTime = getCpuTime();
                    if(FibLoop(inputNumber) < 0){
                        fibloop = false;
@@ -109,10 +108,10 @@ public class Main {
                        break;
                    }
                    endTime = getCpuTime();
-                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+                   total = total + ((endTime-startTime));
                }
                if (!overflow){
-                   lastLoopTime = total/1000; // average
+                   lastLoopTime = total/10000; // average
                    currentRoundTimes[index++] =  lastLoopTime;
                } else{
                    currentRoundTimes[index++] = -2;
@@ -127,7 +126,7 @@ public class Main {
            overflow = false;
            total =0;
            if (fibmatrix && lastMatrixTime < maxTime){
-               for (z = 0; z < 1000; z++){
+               for (z = 0; z < 10000; z++){
                    startTime = getCpuTime();
                    if(FibMatrix1(inputNumber)< 0 ){
                       overflow = true;
@@ -135,10 +134,10 @@ public class Main {
                       break;
                    }
                    endTime = getCpuTime();
-                   total = total + ((endTime-startTime)/1000); // converted to ms then added
+                   total = total + ((endTime-startTime));
                }
                if (!overflow){
-                   lastMatrixTime = total/1000; // average
+                   lastMatrixTime = total/10000; // average
                    currentRoundTimes[index++] =  lastMatrixTime;
                } else{
                    currentRoundTimes[index++] = -2;
@@ -167,20 +166,26 @@ public class Main {
                    System.out.printf("%10d", (int)currentRoundTimes[t]);
                    //Ratio
                    if (inputNumber % 2 == 0){
-                       System.out.printf("%20d", (currentRoundTimes[t] / testTimes.get((inputNumber/2) - 1)[t])); // Tx(X) / Tx(X/2)
+                       //System.out.printf("%20.2f", ((double)(currentRoundTimes[t]) / (testTimes.get((inputNumber/2) - 1)[t]))); // Tx(X) / Tx(X/2)
+                       long[] prt = testTimes.get((inputNumber/2)-1);
+                       System.out.printf("%20.2f", ((double)(currentRoundTimes[t]) / prt[t])); // Tx(X) / Tx(X/2)
                        //System.out.printf("%20s", "");
                    } else System.out.printf("%20s", "");
-                   //Expected Ratio - wish I had a more clever way to handle this
-                   if (t == 0){
-                       // Exponential 1.6180^x
-                       System.out.printf("%20.2f", Math.pow(1.6180, inputNumber));
-                   } else if (t == 1 || t == 2){
-                       // Linear x
-                       System.out.printf("%20d", inputNumber);
-                   } else if (t == 3) {
-                       // Log_2(x)
-                       System.out.printf("%20.2f", ((Math.log(inputNumber) / Math.log(2))));
-                   }
+                   //Expected Ratio
+                   if (inputNumber % 2 == 0){
+                       if (t == 0){
+                           // Exponential 1.6180^x or 2^(x/2)
+                           System.out.printf("%20.2f", (Math.pow(2.0, (inputNumber/2.0))));
+                           //System.out.printf("%20.2f", (Math.pow(1.618, inputNumber)));
+                       } else if (t == 1 || t == 2){
+                           // Linear x
+                           System.out.printf("%20d", inputNumber/(inputNumber/2));
+                       } else if (t == 3) {
+                           // Log_2(x)
+                           System.out.printf("%20.2f", ((Math.log(inputNumber)/Math.log(2)) /
+                                   (Math.log(inputNumber/2)/Math.log(2))));
+                       }
+                   } else System.out.printf("%20s", "");
                }
            }
            System.out.printf("\n");
@@ -196,18 +201,22 @@ public class Main {
         for (int t = 0; t <= tests; t++){
             System.out.printf("\t%d: %d", t, FibRecur(t));
         }
+        //System.out.println("f(92): " + FibRecur(47));
         System.out.printf("\n\t%s\n", "Testing FibCache");
         for (int s = 0; s <= tests; s++){
             System.out.printf("\t%d: %d, ", s, FibCache(s));
         }
+        //System.out.println("f(92): " + FibCache(47));
         System.out.printf("\n\t%s\n", "Testing FibLoop");
         for (int r = 0; r <= tests; r++){
             System.out.printf("\t%d: %d, ", r,  FibLoop(r));
         }
+        //System.out.println("f(92): " + FibLoop(47));
         System.out.printf("\n\t%s\n", "Testing FibMatrix1");
         for (int r = 0; r <= tests; r++){
             System.out.printf("\t%d: %d, ", r, FibMatrix1(r));
         }
+        //System.out.println("f(92): " + FibMatrix1(47));
     }
 
 
