@@ -3,8 +3,8 @@ package com.dmoracco;
 import com.dmoracco.GetCpuTime;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import static com.dmoracco.GetCpuTime.getCpuTime;
 
@@ -252,15 +252,15 @@ public class Main {
         return next;
     }
 
-    public static int FibMatrix1(int number){
+    public static long FibMatrix1(long number){
 
         if (number == 0) return 0;
 
         // Create base matrix
-        int[][] matrix = {{1, 1}, {1, 0}};
+        long[][] matrix = {{1, 1}, {1, 0}};
 
         // Iterate through x-2 powers of base matrix
-        for (int i = 0; i < number-2; i++){
+        for (long i = 0; i < number-2; i++){
             fibMatrixMultiply(matrix);
         }
 
@@ -268,13 +268,13 @@ public class Main {
         return matrix[0][0];
     }
 
-    public static void fibMatrixMultiply(int[][] matrix){
+    public static void fibMatrixMultiply(long[][] matrix){
         // multiply provided 2x2 matrix by the Fibonacci base matrix
         // note: I got rid of the unnecessary arithmetic, though this would likely have been optimized anyway.
-        int tl = matrix[0][0] + matrix[0][1];
-        int tr = matrix[0][0];
-        int bl = matrix[0][0] + matrix[0][1];
-        int br = matrix[0][0];
+        long tl = matrix[0][0] + matrix[0][1];
+        long tr = matrix[0][0];
+        long bl = matrix[0][0] + matrix[0][1];
+        long br = matrix[0][0];
 
         matrix[0][0] = tl;
         matrix[0][1] = tr;
