@@ -3,6 +3,8 @@ package com.dmoracco;
 import com.dmoracco.GetCpuTime;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import static com.dmoracco.GetCpuTime.getCpuTime;
 
@@ -214,22 +216,22 @@ public class Main {
         else return FibRecur(number-1)+FibRecur(number-2);
     }
 
-    public static int FibCache(int number){
+    public static long FibCache(long number){
         // Initialize table
-        int[] resultsCache = new int[number+1];
-        for (int i = 0; i < number; i++){
-            resultsCache[i] = 0;
-        }
+        Hashtable<Long, Long> resultsCache = new Hashtable<Long,Long>();
 
         return fibCacheHelper(number, resultsCache);
     }
 
-    public static int fibCacheHelper(int number, int[] resultsCache){
+    public static long fibCacheHelper(long number, Hashtable<Long, Long> resultsCache){
         if (number < 2) return number; // skip 0, 1
-        else if (resultsCache[number] > 0) return resultsCache[number]; // if result is already in table, return value
+        else if (resultsCache.get(number) != null){
+            return resultsCache.get(number);
+        }
         else { // otherwise, find and fill in result, then return.
-            resultsCache[number] = fibCacheHelper(number-1, resultsCache)+ fibCacheHelper(number-2, resultsCache);
-            return resultsCache[number];
+            resultsCache.put(number, (fibCacheHelper(number-1, resultsCache) +
+                    (fibCacheHelper(number-2, resultsCache))));
+            return resultsCache.get(number);
         }
     }
 
