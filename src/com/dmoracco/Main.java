@@ -15,7 +15,7 @@ public class Main {
        // Testing
        boolean fibrecur = true, fibcache = true, fibloop = true, fibmatrix = true;
        int maxX = 200;
-       long maxTime = 6000;
+       long maxTime = 600000;
        int testCount = 4;
 
        long startTime = 0, endTime = 0, lastRecurTime = 0, lastCacheTime = 0, lastLoopTime = 0, lastMatrixTime = 0;
@@ -47,7 +47,7 @@ public class Main {
            //FibRecur
            overflow = false;
            if (fibrecur && lastRecurTime < maxTime){
-               for (z = 0; z < 1000; z++){
+               for (z = 0; z < 10; z++){
                    startTime = getCpuTime();
                    if (FibRecur(inputNumber) < 0){
                        fibrecur = false;
@@ -58,7 +58,7 @@ public class Main {
                    total = total + ((endTime-startTime)/1000); // converted to ms then added
                }
                if (!overflow){
-                   lastRecurTime = total/1000; // average
+                   lastRecurTime = total/10; // average
                    currentRoundTimes[index++] =  lastRecurTime;
                } else {
                    currentRoundTimes[index++] = -2;
@@ -166,6 +166,7 @@ public class Main {
                    //Ratio
                    if (inputNumber % 2 == 0){
                        System.out.printf("%20d", (currentRoundTimes[t] / testTimes.get((inputNumber/2) - 1)[t])); // Tx(X) / Tx(X/2)
+                       //System.out.printf("%20s", "");
                    } else System.out.printf("%20s", "");
                    //Expected Ratio - wish I had a more clever way to handle this
                    if (t == 0){
@@ -208,7 +209,7 @@ public class Main {
     }
 
 
-    public static int FibRecur(int number){
+    public static long FibRecur(long number){
         if (number < 2) return number;
         else return FibRecur(number-1)+FibRecur(number-2);
     }
